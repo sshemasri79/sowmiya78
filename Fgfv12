@@ -1,0 +1,131 @@
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+        """Insert a new key into the BST."""
+        if self.root is None:
+            self.root = Node(key)
+        else:
+            self._insert_recursive(self.root, key)
+
+    def _insert_recursive(self, root, key):
+        if key < root.key:
+            if root.left is None:
+                root.left = Node(key)
+            else:
+                self._insert_recursive(root.left, key)
+        elif key > root.key:
+            if root.right is None:
+                root.right = Node(key)
+            else:
+                self._insert_recursive(root.right, key)
+        # Ignore duplicates
+
+    def search(self, key):
+        """Search for a key in the BST. Returns True if found, else False."""
+        return self._search_recursive(self.root, key)
+
+    def _search_recursive(self, root, key):
+        if root is None:
+            return False
+        if root.key == key:
+            return True
+        elif key < root.key:
+            return self._search_recursive(root.left, key)
+        else:
+            return self._search_recursive(root.right, key)
+
+    def inorder(self):
+        """Inorder traversal with step-by-step explanation."""
+        print("\nOperation: INORDER Traversal (Left → Root → Right)")
+        result = []
+        step = {"count": 0}
+
+        def _inorder_recursive(node):
+            if node:
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go LEFT")
+                _inorder_recursive(node.left)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: Visit node {node.key}")
+                result.append(node.key)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go RIGHT")
+                _inorder_recursive(node.right)
+
+        _inorder_recursive(self.root)
+        print("Final Inorder result:", result)
+        return result
+
+    def preorder(self):
+        """Preorder traversal with step-by-step explanation."""
+        print("\nOperation: PREORDER Traversal (Root → Left → Right)")
+        result = []
+        step = {"count": 0}
+
+        def _preorder_recursive(node):
+            if node:
+                step["count"] += 1
+                print(f"Step {step['count']}: Visit node {node.key}")
+                result.append(node.key)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go LEFT")
+                _preorder_recursive(node.left)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go RIGHT")
+                _preorder_recursive(node.right)
+
+        _preorder_recursive(self.root)
+        print("Final Preorder result:", result)
+        return result
+
+    def postorder(self):
+        """Postorder traversal with step-by-step explanation."""
+        print("\nOperation: POSTORDER Traversal (Left → Right → Root)")
+        result = []
+        step = {"count": 0}
+
+        def _postorder_recursive(node):
+            if node:
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go LEFT")
+                _postorder_recursive(node.left)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: At node {node.key}, go RIGHT")
+                _postorder_recursive(node.right)
+
+                step["count"] += 1
+                print(f"Step {step['count']}: Visit node {node.key}")
+                result.append(node.key)
+
+        _postorder_recursive(self.root)
+        print("Final Postorder result:", result)
+        return result
+
+
+# Example usage with USER INPUT
+if __name__ == "__main__":
+    bst = BinarySearchTree()
+    
+    # Take input from user
+    values = list(map(int, input("Enter values to insert in BST (space-separated): ").split()))
+    for val in values:
+        bst.insert(val)
+
+    # Traversals with explanations
+    bst.inorder()
+    bst.preorder()
+    bst.postorder()
