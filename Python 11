@@ -1,0 +1,154 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.prev = None
+        self.next = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+
+    def _as_list_forward(self):
+        vals = []
+        cur = self.head
+        while cur:
+            vals.append(cur.data)
+            cur = cur.next
+        return vals
+
+    def _as_list_backward(self):
+        vals = []
+        cur = self.head
+        if not cur:
+            return vals
+        while cur.next:
+            cur = cur.next
+        while cur:
+            vals.append(cur.data)
+            cur = cur.prev
+        return vals
+
+    def insert_at_end(self, data):
+        step = 1
+        print(f"\nOperation: insert_at_end({data})")
+        print(f"Step {step}: Create a new node with data = {data}.")
+        new_node = Node(data)
+
+        step += 1
+        if not self.head:
+            print(f"Step {step}: The list is empty â†’ set head to the new node ({data}).")
+            self.head = new_node
+            print(f"Step {step+1}: Resulting list (forward):", " <-> ".join(map(str, self._as_list_forward())), "-> None")
+            return
+
+        print(f"Step {step}: List not empty â†’ start traversing from head ({self.head.data}).")
+        current = self.head
+        while current.next:
+            step += 1
+            print(f"Step {step}: Move from node {current.data} to next node {current.next.data}.")
+            current = current.next
+
+        step += 1
+        print(f"Step {step}: Reached tail ({current.data}). Attach new node after it.")
+        current.next = new_node
+        new_node.prev = current
+        print(f"Step {step+1}: Resulting list (forward):", " <-> ".join(map(str, self._as_list_forward())), "-> None")
+
+    def delete_node(self, key):
+        step = 1
+        print(f"\nOperation: delete_node({key})")
+        current = self.head
+        print(f"Step {step}: Start at head -> {current.data if current else 'None'}.")
+        step += 1
+        if not current:
+            print(f"Step {step}: The list is empty â†’ nothing to delete.")
+            return
+
+        # If the node to delete is the head
+        if current.data == key:
+            print(f"Step {step}: Head node value matches {key} â†’ remove head.")
+            self.head = current.next
+            if self.head:
+                step += 1
+                print(f"Step {step}: New head is {self.head.data} â†’ clear its prev pointer.")
+                self.head.prev = None
+            else:
+                step += 1
+                print(f"Step {step}: List became empty after removing the head.")
+            print(f"Step {step+1}: Resulting list (forward):", " <-> ".join(map(str, self._as_list_forward())) or "None", "-> None")
+            return
+
+        # Search for the node to delete
+        while current and current.data != key:
+            print(f"Step {step}: At node {current.data} (not {key}) â†’ move to next.")
+            current = current.next
+            step += 1
+
+        if not current:
+            print(f"Step {step}: Reached end of list â†’ value {key} not found.")
+            return
+
+        print(f"Step {step}: Found node with value {key} (this will be removed).")
+        # Unlink the node
+        if current.next:
+            step += 1
+            print(f"Step {step}: Node has a next node {current.next.data} â†’ set its prev to {current.prev.data if current.prev else 'None'}.")
+            current.next.prev = current.prev
+        if current.prev:
+            step += 1
+            print(f"Step {step}: Node has a prev node {current.prev.data} â†’ set its next to {current.next.data if current.next else 'None'}.")
+            current.prev.next = current.next
+
+        print(f"Step {step+1}: Resulting list (forward):", " <-> ".join(map(str, self._as_list_forward())) or "None", "-> None")
+
+    def display_forward(self):
+        print("\nOperation: display_forward()")
+        current = self.head
+        if not current:
+            print("Step 1: List is empty â†’ output: None")
+            return
+        step = 1
+        elements = []
+        print(f"Step {step}: Start at head -> {current.data}.")
+        while current:
+            step += 1
+            print(f"Step {step}: Visit node -> {current.data}")
+            elements.append(str(current.data))
+            current = current.next
+        print(f"Step {step+1}: Reached end. Forward traversal output:", " <-> ".join(elements), "-> None")
+
+    def display_backward(self):
+        print("\nOperation: display_backward()")
+        current = self.head
+        if not current:
+            print("Step 1: List is empty â†’ output: None")
+            return
+        step = 1
+        print(f"Step {step}: Start at head -> {current.data}. Walk to tail to begin backward traversal.")
+        while current.next:
+            step += 1
+            print(f"Step {step}: Move to next -> {current.next.data}")
+            current = current.next
+        step += 1
+        print(f"Step {step}: Reached tail -> {current.data}. Now traverse backward using prev pointers.")
+        elements = []
+        while current:
+            step += 1
+            print(f"Step {step}: Visit node -> {current.data}")
+            elements.append(str(current.data))
+            current = current.prev
+        print(f"Step {step+1}: Reached start. Backward traversal output:", " <-> ".join(elements), "-> None")
+
+
+# Example run
+if __name__ == "__main__":
+    dll = DoublyLinkedList()
+    dll.insert_at_end(10)
+    dll.insert_at_end(20)
+    dll.insert_at_end(30)
+
+    dll.display_forward()
+    dll.display_backward()
+
+    dll.delete_node(20)
+    dll.display_forward()
